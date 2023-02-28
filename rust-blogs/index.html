@@ -1,0 +1,569 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+      <link rel="icon" href="../img/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
+    
+    
+      
+        <title>Write 2048 Using Rust! - Rust Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.113286f1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.a0c5b2b5.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../css/termynal.css">
+    
+      <link rel="stylesheet" href="../css/custom.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="amber" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#write-2048-using-rust" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Rust Blog" class="md-header__button md-logo" aria-label="Rust Blog" data-md-component="logo">
+      
+  <img src="../img/Rust_programming_language_black_logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Rust Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Write 2048 Using Rust!
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="slate" data-md-color-primary="amber" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="amber" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_2">
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Rust Blog" class="md-nav__button md-logo" aria-label="Rust Blog" data-md-component="logo">
+      
+  <img src="../img/Rust_programming_language_black_logo.svg" alt="logo">
+
+    </a>
+    Rust Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          Rust Blogs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Rust Blogs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Write 2048 Using Rust!
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Write 2048 Using Rust!
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background-information" class="md-nav__link">
+    Background Information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#game-design-patterns" class="md-nav__link">
+    Game Design Patterns
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    Implementation
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-project" class="md-nav__link">
+    Creating Project
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background-information" class="md-nav__link">
+    Background Information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#game-design-patterns" class="md-nav__link">
+    Game Design Patterns
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    Implementation
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-project" class="md-nav__link">
+    Creating Project
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="write-2048-using-rust">Write 2048 Using Rust!<a class="headerlink" href="#write-2048-using-rust" title="Permanent link">&para;</a></h1>
+<h2 id="background-information">Background Information<a class="headerlink" href="#background-information" title="Permanent link">&para;</a></h2>
+<p>In all fundamental programming courses, I have always been required to do exercises like tic-tac-toe, hangman, minesweeper and 2048.</p>
+<p>Personally I found tic-tac-toe, hangman and minesweeper too <code>"unchallenging"</code>. 🤔</p>
+<p>My initial thoughts were to share about how to write 2048 in Rust, or Word Ladder II in Rust (its a Leetcode hard question that I did in COMP6771).</p>
+<p>Well, I decide to write a blog for each of them (since we can earn up to 10 course marks with 5 blogs 😃).</p>
+<p>Word Ladder 2 is more of a BFS DFS algo thing, and it requires to use things like HashMaps and Queues, so I will leave it to the next blog..(or the blog after the, if I decide to do a testing blog to 2048 as next blog😂)</p>
+<p>I have been planning the blog since week 2, however decorating and configuring the blog took most of my time😅.</p>
+<h2 id="game-design-patterns">Game Design Patterns<a class="headerlink" href="#game-design-patterns" title="Permanent link">&para;</a></h2>
+<ul>
+<li>We will be using usize for each block on the game board since the maximum number of a block is <code>131,072</code> (according to <a target="_blank" href="https://puzzling.stackexchange.com/questions/48/what-is-the-largest-tile-possible-in-2048">this post</a>), usize should be more than enough, and since the blocks can only contains positive number from <code>2</code> to <code>131,072</code>, therefore we will be using unsigned integers.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">// let each_block: i32 = ...</span>
+<span class="hll"><span class="kd">let</span><span class="w"> </span><span class="n">each_block</span>: <span class="kt">usize</span> <span class="o">=</span><span class="w"> </span><span class="o">..</span><span class="p">.</span>
+</span></code></pre></div>
+<ul>
+<li>Instead of using a 2d array, we will be using vector of vector as the game board, since its easier to perform operation</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">// let board: [[usize; 4]; 4] = ...</span>
+<span class="hll"><span class="kd">let</span><span class="w"> </span><span class="n">board</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">usize</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">..</span><span class="p">.</span>
+</span></code></pre></div>
+<ul>
+<li>The only row operation we need is row merge left (I will explain why we don't need the others later) </li>
+<li>this operation merges pairs of block with the same value beside each other once, and replace the empty spots with zeros</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">usize</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">];</span>
+<span class="n">row_merge_left</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
+
+<span class="hll"><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{v:?}&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// [16, 8, 0, 0]</span>
+</span></code></pre></div>
+<ul>
+<li>If we apply row_merge_left to all rows then it would be matrix merge left.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">matrix</span><span class="p">.</span><span class="n">iter_mut</span><span class="p">().</span><span class="n">foreach</span><span class="p">(</span><span class="o">|</span><span class="n">row</span><span class="o">|</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">row_merge_left</span><span class="p">(</span><span class="n">row</span><span class="p">);</span><span class="w"> </span><span class="c1">// Merge the row to the left </span>
+<span class="p">});</span>
+</code></pre></div>
+<ul>
+<li>Now if we want to merge matrix to the right, here is the logic of how to do that
+  For each row in matrix, reverse the row and perform row_merge_left, then we reverse back, so the actual operation performed is row merge right</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">matrix</span><span class="p">.</span><span class="n">iter_mut</span><span class="p">().</span><span class="n">for_each</span><span class="p">(</span><span class="o">|</span><span class="n">row</span><span class="o">|</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">row</span><span class="p">.</span><span class="n">reverse</span><span class="p">();</span><span class="w"> </span><span class="c1">// Reverse the elements in the row</span>
+<span class="w">    </span><span class="n">row_merge_left</span><span class="p">(</span><span class="n">row</span><span class="p">);</span><span class="w"> </span><span class="c1">// Merge the row to the left </span>
+<span class="w">    </span><span class="n">row</span><span class="p">.</span><span class="n">reverse</span><span class="p">();</span><span class="w"> </span><span class="c1">// Reverse the elements in the row back</span>
+<span class="p">});</span>
+</code></pre></div>
+<ul class="task-list">
+<li>
+<p>We are half way done!!</p>
+</li>
+<li class="task-list-item">
+<p><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> matrix merge left</p>
+</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> matrix merge right</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> matrix merge up</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> matrix merge down</li>
+</ul>
+<hr />
+<ul>
+<li>
+<p>The key concept for matrix merge up and matrix merge down is that to perform matrix transform.
+  In linear algebra, we know that the transpose of a matrix is obtained by swapping its rows and columns, and taking the transpose of this result gives us the original matrix.</p>
+</li>
+<li>
+<p>Therefore we can implement matrix merge up as the following</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">transpose</span><span class="p">(</span><span class="n">matrix</span><span class="p">);</span>
+<span class="o">..</span><span class="p">.</span><span class="w"> </span><span class="c1">// matrix merge left code goes here</span>
+<span class="n">transpose</span><span class="p">(</span><span class="n">matrix</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>Same for matrix merge down</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">transpose</span><span class="p">(</span><span class="n">matrix</span><span class="p">);</span>
+<span class="o">..</span><span class="p">.</span><span class="w"> </span><span class="c1">// matrix merge right code goes here</span>
+<span class="n">transpose</span><span class="p">(</span><span class="n">matrix</span><span class="p">);</span>
+</code></pre></div>
+<p>We have now designed all the operation that 2048 needed!</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> matrix merge left</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> matrix merge right</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> matrix merge up</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> matrix merge down</li>
+</ul>
+<p><font size="7">We are now ready to code! 🤩</font></p>
+<h2 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h2>
+<h3 id="creating-project">Creating Project<a class="headerlink" href="#creating-project" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Create <code>Rust</code> project with the following command:</li>
+</ul>
+<div class="termy">
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cargo<span class="w"> </span>new<span class="w"> </span>game2048
+<span class="go">---&gt; 100%</span>
+</code></pre></div>
+</div>
+
+<ul>
+<li>Current Project Structure (ignore file <code>.gitignore</code> and folder <code>/target</code>)</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">game2048</span><span class="o">/</span>
+<span class="err">├──</span><span class="w"> </span><span class="nt">Cargo</span><span class="p">.</span><span class="nc">lock</span>
+<span class="err">├──</span><span class="w"> </span><span class="nt">Cargo</span><span class="p">.</span><span class="nc">toml</span>
+<span class="err">└──</span><span class="w"> </span><span class="nt">src</span><span class="o">/</span>
+<span class="w">    </span><span class="err">└──</span><span class="w"> </span><span class="nt">main</span><span class="p">.</span><span class="nc">rs</span>
+</code></pre></div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "content.code.annotate"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      
+        <script src="../js/termynal.js"></script>
+      
+        <script src="../js/custom.js"></script>
+      
+    
+  </body>
+</html>
